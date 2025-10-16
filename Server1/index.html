@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Database Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            display: none;
+        }
+        .error {
+            background-color: #ffebee;
+            border-left-color: #f44336;
+        }
+        .attribution {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Patient Database Management</h1>
+        
+        <div class="section">
+            <h2>Insert Sample Data</h2>
+            <p>Click the button below to insert three sample patient records into the database.</p>
+            <button id="insertBtn">Insert Sample Patients</button>
+        </div>
+        
+        <div class="section">
+            <h2>Execute SQL Query</h2>
+            <p>Enter a SELECT or INSERT query below:</p>
+            <textarea id="sqlQuery" rows="6" placeholder="Example: SELECT * FROM patient"></textarea>
+            <br>
+            <button id="executeBtn">Execute Query</button>
+        </div>
+        
+        <div id="response"></div>
+        
+        <div class="attribution">
+            Attribution: Parts of this code were developed with assistance from ChatGPT for fetch API implementation and UI structure.
+        </div>
+    </div>
+
+    <script>
+        // Configuration at the top
+        const CONFIG = {
+    API_BASE_URL: 'http://localhost:3000/api/v1/sql'  // ← Make sure it says this
+};
+        
+        const SAMPLE_PATIENTS = [
+            {
+                first_name: 'John',
+                last_name: 'Doe',
+                date_of_birth: '1985-05-15',
+                gender: 'Male',
+                email: 'john.doe@email.com',
+                phone: '555-0101',
+                address: '123 Main St, City, State'
+            },
+            {
+                first_name: 'Jane',
+                last_name: 'Smith',
+                date_of_birth: '1990-08-22',
+                gender: 'Female',
+                email: 'jane.smith@email.com',
+                phone: '555-0102',
+                address: '456 Oak Ave, City, State'
+            },
+            {
+                first_name: 'Bob',
+                last_name: 'Johnson',
+                date_of_birth: '1978-12-03',
+                gender: 'Male',
+                email: 'bob.johnson@email.com',
+                phone: '555-0103',
+                address: '789 Pine Rd, City, State'
+            }
+        ];
+        
+        const MESSAGES = {
+            INSERTING: 'Inserting sample patients...',
+            SUCCESS: 'Operation completed successfully!',
+            ERROR: 'Error occurred:',
+            EXECUTING: 'Executing query...',
+            EMPTY_QUERY: 'Please enter a SQL query.',
+            INVALID_QUERY: 'Only SELECT and INSERT queries are allowed.'
+        };
+
+        // Patient Model Class
+        class Patient {
+            constructor(firstName, lastName, dateOfBirth, gender, email, phone, address) {
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.dateOfBirth = dateOfBirth;
+                this.gender = gender;
+                this.email = email;
+                this.phone = phone;
+                this.address = address;
+            }
+
+            toInsertQuery() {
+                return `INSERT INTO patient (first_name, last_name, date_of_birth, gender, email, phone, address) 
+                        VALUES ('${this.firstName}', '${this.lastName}', '${this.dateOfBirth}', 
+                        '${this.gender}', '${this.email}', '${this.phone}', '${this.address}')`;
+            }
+        }
+
+        // API Service Class
+        class APIService {
+            constructor(baseUrl) {
+                this.baseUrl = baseUrl;
+            }
+
+            async sendQuery(query, method) {
+                if (method === 'GET') {
+                    const encodedQuery = encodeURIComponent(query);
+                    const response = await fetch(`${this.baseUrl}/${encodedQuery}`, {
+                        method: 'GET'
+                    });
+                    return await response.json();
+                } else if (method === 'POST') {
+                    const response = await fetch(this.baseUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ query: query })
+                    });
+                    return await response.json();
+                }
+            }
+        }
+
+        // UI Manager Class
+        class UIManager {
+            constructor() {
+                this.responseDiv = document.getElementById('response');
+            }
+
+            showResponse(message, isError = false) {
+                this.responseDiv.textContent = message;
+                this.responseDiv.style.display = 'block';
+                
+                if (isError) {
+                    this.responseDiv.classList.add('error');
+                } else {
+                    this.responseDiv.classList.remove('error');
+                }
+            }
+
+            getQueryInput() {
+                return document.getElementById('sqlQuery').value.trim();
+            }
+        }
+
+        // Query Validator Class
+        class QueryValidator {
+            static validate(query) {
+                const trimmedQuery = query.trim().toUpperCase();
+                return trimmedQuery.startsWith('SELECT') || trimmedQuery.startsWith('INSERT');
+            }
+
+            static getQueryType(query) {
+                const trimmedQuery = query.trim().toUpperCase();
+                if (trimmedQuery.startsWith('SELECT')) {
+                    return 'GET';
+                } else if (trimmedQuery.startsWith('INSERT')) {
+                    return 'POST';
+                }
+                return null;
+            }
+        }
+
+        // Patient Database Controller Class
+        class PatientDatabaseController {
+            constructor(apiService, uiManager) {
+                this.apiService = apiService;
+                this.uiManager = uiManager;
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                document.getElementById('insertBtn').addEventListener('click', () => {
+                    this.insertSampleData();
+                });
+
+                document.getElementById('executeBtn').addEventListener('click', () => {
+                    this.executeQuery();
+                });
+            }
+
+            async insertSampleData() {
+                this.uiManager.showResponse(MESSAGES.INSERTING);
+                
+                try {
+                    for (let patientData of SAMPLE_PATIENTS) {
+                        const patient = new Patient(
+                            patientData.first_name,
+                            patientData.last_name,
+                            patientData.date_of_birth,
+                            patientData.gender,
+                            patientData.email,
+                            patientData.phone,
+                            patientData.address
+                        );
+                        
+                        const query = patient.toInsertQuery();
+                        const result = await this.apiService.sendQuery(query, 'POST');
+                        
+                        if (!result.success) {
+                            throw new Error(result.error || 'Insert failed');
+                        }
+                    }
+                    
+                    this.uiManager.showResponse(MESSAGES.SUCCESS + '\n3 patients inserted successfully.');
+                    
+                } catch (error) {
+                    this.uiManager.showResponse(MESSAGES.ERROR + ' ' + error.message, true);
+                }
+            }
+
+            async executeQuery() {
+                const query = this.uiManager.getQueryInput();
+                
+                if (!query) {
+                    this.uiManager.showResponse(MESSAGES.EMPTY_QUERY, true);
+                    return;
+                }
+
+                if (!QueryValidator.validate(query)) {
+                    this.uiManager.showResponse(MESSAGES.INVALID_QUERY, true);
+                    return;
+                }
+                
+                this.uiManager.showResponse(MESSAGES.EXECUTING);
+                
+                try {
+                    const method = QueryValidator.getQueryType(query);
+                    const result = await this.apiService.sendQuery(query, method);
+                    
+                    if (result.success) {
+                        let displayMessage = MESSAGES.SUCCESS + '\n\n';
+                        
+                        if (result.data && Array.isArray(result.data)) {
+                            if (result.data.length === 0) {
+                                displayMessage += 'No records found.';
+                            } else {
+                                displayMessage += JSON.stringify(result.data, null, 2);
+                            }
+                        } else if (result.message) {
+                            displayMessage += result.message;
+                        }
+                        
+                        this.uiManager.showResponse(displayMessage);
+                    } else {
+                        throw new Error(result.error || 'Query execution failed');
+                    }
+                    
+                } catch (error) {
+                    this.uiManager.showResponse(MESSAGES.ERROR + ' ' + error.message, true);
+                }
+            }
+        }
+
+        // Initialize the application
+        const apiService = new APIService(CONFIG.API_BASE_URL);
+        const uiManager = new UIManager();
+        const controller = new PatientDatabaseController(apiService, uiManager);
+    </script>
+</body>
+</html>
