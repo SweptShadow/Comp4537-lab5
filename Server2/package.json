@@ -1,15 +1,17 @@
 {
-    "name": "patient-db-api",
-    "version": "1.0.0",
-    "description": "Patient Database API Server",
-    "main": "server.js",
-    "scripts": {
-      "start": "node server.js"
-    },
-    "keywords": ["database", "api", "patient"],
-    "author": "Your Name",
-    "license": "ISC",
-    "dependencies": {
-      "mysql2": "^3.6.0"
-    }
-  }
+  "name": "patient-db-api",
+  "version": "1.0.0",
+  "description": "Patient Database API Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "database",
+    "api",
+    "patient"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {}
+}

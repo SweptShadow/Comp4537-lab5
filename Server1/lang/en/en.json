@@ -1,0 +1,29 @@
+{
+    "title": "Patient Database Management",
+
+    "insertSection": {
+        "heading": "Insert Sample Data",
+        "description": "Click the button below to insert three sample patient records into the database.",
+        "buttonText": "Insert Sample Patients"
+    },
+
+    "querySection": {
+        "heading": "Execute SQL Query",
+        "description": "Enter a SELECT or INSERT query below:",
+        "placeholder": "Example: SELECT * FROM patient",
+        "buttonText": "Execute Query"
+    },
+
+    "messages": {
+        "inserting": "Inserting sample patients...",
+        "success": "Operation completed successfully!",
+        "error": "Error occurred:",
+        "executing": "Executing query...",
+        "emptyQuery": "Please enter a SQL query.",
+        "invalidQuery": "Only SELECT and INSERT queries are allowed.",
+        "insertSuccess": "3 patients inserted successfully.",
+        "noRecords": "No records found."
+    },
+
+    "attribution": "Part of code was fixed w/ assistance from ChatGPT (fetch API implementation & UI structure)."
+}
