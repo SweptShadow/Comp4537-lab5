@@ -1,20 +1,18 @@
-// Parts of this code structure were developed with assistance from ChatGPT
-// for database connection setup and CORS handling
-
-// Configuration strings at the top
+// Config strings at the top
 const CONFIG = {
     // LOCAL DEPLOYMENT (for testing locally)
-    PORT: 3000,
-    DB_PATH: './patient_database.db',
-    ALLOWED_ORIGIN: '*',
-
-    // PRODUCTION DEPLOYMENT (uncomment when deploying to server)
-    // PORT: process.env.PORT || 3000,
+    // PORT: 3000,
     // DB_PATH: './patient_database.db',
-    // ALLOWED_ORIGIN: 'https://your-frontend-domain.netlify.app', // Replace with actual frontend URL
+    // ALLOWED_ORIGIN: '*',
+
+    // PRODUCTION DEPLOYMENT (for deploying to server), frontend url
+    PORT: process.env.PORT || 3000,
+    DB_PATH: './patient_database.db',
+    ALLOWED_ORIGIN: 'https://your-frontend-domain.netlify.app',
 };
 
 const MESSAGES = {
+
     SERVER_START: `Server running on port ${CONFIG.PORT}`,
     DB_CONNECTED: 'Database connected successfully',
     DB_ERROR: 'Database connection error',
@@ -27,6 +25,7 @@ const MESSAGES = {
 };
 
 const SQL_CONFIG = {
+
     CREATE_TABLE: `
         CREATE TABLE IF NOT EXISTS patient (
             patient_id INTEGER PRIMARY KEY AUTOINCREMENT,

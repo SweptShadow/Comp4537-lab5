@@ -17,7 +17,7 @@ class PatientDatabaseController {
         });
 
         document.getElementById('executeBtn').addEventListener('click', () => {
-            
+
             this.executeQuery();
         });
     }
@@ -53,7 +53,18 @@ class PatientDatabaseController {
             this.uiManager.showResponse(this.lang.getText('messages.success') + '\n' + this.lang.getText('messages.insertSuccess'));
 
         } catch (error) {
-            this.uiManager.showResponse(this.lang.getText('messages.error') + ' ' + error.message, true);
+            console.error('Insert error:', error);
+            let errorMessage = this.lang.getText('messages.error') + ' ';
+
+            if (error.message === 'CONNECTION_ERROR') {
+                errorMessage += this.lang.getText('messages.connectionError');
+            } else if (error.message === 'SERVER_ERROR') {
+                errorMessage += this.lang.getText('messages.serverError');
+            } else {
+                errorMessage += error.message;
+            }
+
+            this.uiManager.showResponse(errorMessage, true);
         }
     }
 
@@ -68,14 +79,14 @@ class PatientDatabaseController {
         if (!QueryValidator.validate(query)) {
 
             this.uiManager.showResponse(this.lang.getText('messages.invalidQuery'), true);
-            
+
             return;
         }
 
         this.uiManager.showResponse(this.lang.getText('messages.executing'));
 
         try {
-            
+
             const method = QueryValidator.getQueryType(query);
             const result = await this.apiService.sendQuery(query, method);
 
@@ -101,7 +112,18 @@ class PatientDatabaseController {
             }
 
         } catch (error) {
-            this.uiManager.showResponse(this.lang.getText('messages.error') + ' ' + error.message, true);
+            console.error('Query error:', error);
+            let errorMessage = this.lang.getText('messages.error') + ' ';
+
+            if (error.message === 'CONNECTION_ERROR') {
+                errorMessage += this.lang.getText('messages.connectionError');
+            } else if (error.message === 'SERVER_ERROR') {
+                errorMessage += this.lang.getText('messages.serverError');
+            } else {
+                errorMessage += error.message;
+            }
+
+            this.uiManager.showResponse(errorMessage, true);
         }
     }
 }

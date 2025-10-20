@@ -1,40 +1,50 @@
-// Configuration at the top
+// Config
 const CONFIG = {
     // LOCAL DEPLOYMENT (for testing locally)
-    API_BASE_URL: 'http://localhost:3000/api/v1/sql',
+    // API_BASE_URL: 'http://localhost:3000/api/v1/sql',
 
-    // PRODUCTION DEPLOYMENT (uncomment when deploying to netlify)
-    // API_BASE_URL: 'https://your-backend-domain.render.com/api/v1/sql', // Replace with actual backend URL
+    // PRODUCTION DEPLOYMENT (for deploying to netlify), backend url on render
+    API_BASE_URL: 'https://your-backend-domain.render.com/api/v1/sql',
 };
 
 const SAMPLE_PATIENTS = [
     {
-        first_name: 'John',
-        last_name: 'Doe',
-        date_of_birth: '1985-05-15',
-        gender: 'Male',
-        email: 'john.doe@email.com',
-        phone: '555-0101',
-        address: '123 Main St, City, State'
-    },
-
-    {
-        first_name: 'Jane',
-        last_name: 'Smith',
-        date_of_birth: '1990-08-22',
+        first_name: 'Sara',
+        last_name: 'Brown',
+        date_of_birth: '1981-01-01',
         gender: 'Female',
-        email: 'jane.smith@email.com',
-        phone: '555-0102',
-        address: '456 Oak Ave, City, State'
+        email: 'sara.brown@email.com',
+        phone: '555-0201',
+        address: '123 Oak St, City, State'
     },
 
     {
-        first_name: 'Bob',
-        last_name: 'Johnson',
-        date_of_birth: '1978-12-03',
+        first_name: 'John',
+        last_name: 'Smith',
+        date_of_birth: '1941-01-01',
         gender: 'Male',
-        email: 'bob.johnson@email.com',
-        phone: '555-0103',
-        address: '789 Pine Rd, City, State'
+        email: 'john.smith@email.com',
+        phone: '555-0202',
+        address: '456 Pine Ave, City, State'
+    },
+
+    {
+        first_name: 'Jack',
+        last_name: 'Ma',
+        date_of_birth: '1961-01-30',
+        gender: 'Male',
+        email: 'jack.ma@email.com',
+        phone: '555-0203',
+        address: '789 Cedar Rd, City, State'
+    },
+
+    {
+        first_name: 'Elon',
+        last_name: 'Musk',
+        date_of_birth: '1999-01-01',
+        gender: 'Male',
+        email: 'elon.musk@email.com',
+        phone: '555-0204',
+        address: '321 Elm Dr, City, State'
     }
 ];

@@ -63,7 +63,9 @@ textarea {
     border-radius: 4px;
     white-space: pre-wrap;
     font-family: monospace;
-    display: none;
+    display: block;
+    min-height: 50px;
+    border: 1px solid #ddd;
 }
 
 .error {
