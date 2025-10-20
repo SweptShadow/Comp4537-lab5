@@ -8,7 +8,7 @@ const CONFIG = {
     // PRODUCTION DEPLOYMENT (for deploying to server), frontend url
     PORT: process.env.PORT || 3000,
     DB_PATH: './patient_database.db',
-    ALLOWED_ORIGIN: 'https://your-frontend-domain.netlify.app',
+    ALLOWED_ORIGIN: 'https://comp4537lab5s7frontend.netlify.app',
 };
 
 const MESSAGES = {

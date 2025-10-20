@@ -4,7 +4,7 @@ const CONFIG = {
     // API_BASE_URL: 'http://localhost:3000/api/v1/sql',
 
     // PRODUCTION DEPLOYMENT (for deploying to netlify), backend url on render
-    API_BASE_URL: 'https://your-backend-domain.render.com/api/v1/sql',
+    API_BASE_URL: 'https://c4537-lab5-db.onrender.com/api/v1/sql',
 };
 
 const SAMPLE_PATIENTS = [
