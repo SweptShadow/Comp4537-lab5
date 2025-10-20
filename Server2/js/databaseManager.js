@@ -12,9 +12,45 @@ class DatabaseManager {
             // Create the patient table if it doesn't exist
             this.db.exec(SQL_CONFIG.CREATE_TABLE);
             console.log(MESSAGES.TABLE_CREATED);
+
+            // Insert sample data for deliverable 2.2 requirement
+            await this.insertSampleDataIfEmpty();
         } catch (error) {
             console.error(MESSAGES.DB_ERROR, error);
             throw error;
+        }
+    }
+
+    async insertSampleDataIfEmpty() {
+        try {
+            // Check if table is empty
+            const countStmt = this.db.prepare('SELECT COUNT(*) as count FROM patient');
+            const result = countStmt.get();
+
+            if (result.count === 0) {
+                console.log('Inserting sample patients for deliverable 2.2...');
+
+                // Insert the 4 required sample patients
+                const insertStmt = this.db.prepare(`
+                    INSERT INTO patient (first_name, last_name, date_of_birth, gender, email, phone, address) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                `);
+
+                const samplePatients = [
+                    ['Sara', 'Brown', '1981-01-01', 'Female', 'sara.brown@email.com', '555-0201', '123 Oak St, City, State'],
+                    ['John', 'Smith', '1941-01-01', 'Male', 'john.smith@email.com', '555-0202', '456 Pine Ave, City, State'],
+                    ['Jack', 'Ma', '1961-01-30', 'Male', 'jack.ma@email.com', '555-0203', '789 Cedar Rd, City, State'],
+                    ['Elon', 'Musk', '1999-01-01', 'Male', 'elon.musk@email.com', '555-0204', '321 Elm Dr, City, State']
+                ];
+
+                for (let patient of samplePatients) {
+                    insertStmt.run(...patient);
+                }
+
+                console.log('Sample patients inserted successfully');
+            }
+        } catch (error) {
+            console.error('Error inserting sample data:', error);
         }
     }
 

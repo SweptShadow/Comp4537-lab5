@@ -1,41 +1,21 @@
 # Patient Database Management System
 
-## Lab 5 - Database Integration with SQLite
+## Local Setup
+```bash
+# Backend
+cd Server2 && node server.js
 
-### Start Up Commands (Local Testing):
+# Frontend (new terminal)
+cd Server1 && python -m http.server 8000
+```
+Open: http://localhost:8000
 
-1. **Server Side (Backend)**
-   ```bash
-   cd Server2
-   node server.js
-   ```
+## Production URLs
+- **Frontend**: https://comp4537lab5s7frontend.netlify.app
+- **Backend**: https://c4537-lab5-db.onrender.com
 
-2. **Front End (Client)**
-   ```bash
-   cd Server1
-   python3 -m http.server 8000
-   ```
-
-**Extra Info:** Make sure server is running first, then run front end side
-
-### Features:
+## Features
 - SQLite database with patient records
-- REST API for database operations
-- Secure query validation (blocks UPDATE/DELETE/DROP)
-- Support for SELECT and INSERT queries only
-- Modular code architecture
-- Easy local/production deployment switching
-
-### Database Schema:
-- patient_id (Primary Key, Auto-increment)
-- first_name, last_name (Text, Required)
-- date_of_birth (Date, Required)
-- gender (Text with constraints)
-- email, phone, address (Text, Optional)
-- created_at (Timestamp, Auto-generated)
-
-### Deployment:
-See `DEPLOYMENT.md` for detailed deployment instructions for Netlify (frontend) and Render (backend).
-
-### Attribution:
-Parts of this code were developed with assistance from ChatGPT for fetch API implementation, UI structure, and database connection setup.
+- REST API (GET/POST only)
+- Query validation (blocks dangerous SQL)
+- Modular architecture
